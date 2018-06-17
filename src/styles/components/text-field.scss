@@ -1,0 +1,33 @@
+.text-field {
+    margin: 20px 0;
+    width: 100%;
+
+    &__label,
+    &__input {
+        display: block;
+    }
+
+    &__input {
+        @extend .type--body-1;
+        border-radius: 4px;
+        border: 1px solid rgba(#4C3E58, 0.4);
+        margin-top: 6px;
+        padding: 10px 16px;
+        transition: 150ms;
+        width: 100%;
+
+        &:focus {
+            background-color: rgba(#A588BF, 0.1);
+            border-color: #372D40;
+            outline: none;
+        }
+
+        &:hover {
+            border-color: #372D40;
+        }
+    }
+
+    &__label {
+        @extend .type--body-2;
+    }
+}

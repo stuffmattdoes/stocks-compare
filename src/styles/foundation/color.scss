@@ -1,0 +1,11 @@
+$color-primary: #8427B0 !important;
+
+.color {
+    &--critical {
+        color: #CA2035 !important;
+    }
+
+    &--success {
+        color: #09B08A !important;
+    }
+}

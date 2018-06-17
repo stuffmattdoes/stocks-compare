@@ -1,0 +1,10 @@
+.add-item {
+    display: block;
+    margin: 18px 24px 0;
+
+    input {
+        @extend .type--body-2;
+        padding: 8px;
+        width: 100%;
+    }
+}

@@ -1,0 +1,73 @@
+// Helpers
+
+// Displays
+/*
+    none
+    inline
+    inline-block
+    block
+    table
+    table-cell
+    table-row
+    flex
+    inline-flex
+*/
+
+.d-none {
+    display: none;
+}
+
+.d-inline {
+    display: inline;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.d-block {
+    display: block;
+}
+
+
+// Hide content from user but keep it available for screen readers
+.visible {
+    visibility: visible;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+
+// Scroll behavior
+.no-scroll {
+    overflow: hidden;
+}
+
+
+// Reorder flex child elements per breakpoint
+@each $size in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $size);
+
+    @if $size != $breakpoint-default {
+        @include breakpoint($min: $size) {
+
+            .d-none-#{$size} {
+                display: none;
+            }
+
+            .d-inline-#{$size} {
+                display: inline;
+            }
+
+            .d-inline-block-#{$size} {
+                display: inline-block;
+            }
+
+            .d-block-#{$size} {
+                display: block;
+            }
+        }
+    }
+}

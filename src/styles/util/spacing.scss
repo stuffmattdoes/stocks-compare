@@ -1,0 +1,103 @@
+$spacings: (
+    0: 0px,
+    xs: 8px,
+    s: 16px,
+    m: 24px,
+    l: 32px,
+    xl: 48px,
+    xxl: 64px
+);
+
+@each $spacing in map-keys($spacings) {
+    $space: map-get($spacings, $spacing);
+
+    // Full margin
+    .m-#{$spacing} {
+        margin: $space;
+    }
+
+    // Magin horizontal
+    .m-h-#{$spacing} {
+        margin-left: $space;
+        margin-right: $space;
+    }
+
+    // Margin vertical
+    .m-v-#{$spacing} {
+        margin-top: $space;
+        margin-bottom: $space;
+
+    }
+
+    // Margin top
+    .m-t-#{$spacing} {
+        margin-top: $space;
+    }
+
+    // Margin right
+    .m-r-#{$spacing} {
+        margin-right: $space;
+    }
+
+    // Margin bottom
+    .m-b-#{$spacing} {
+        margin-bottom: $space;
+    }
+
+    // Margin left
+    .m-l-#{$spacing} {
+        margin-left: $space;
+    }
+}
+
+// Breakpoint-responsive spacing classes
+@each $size in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $size);
+
+    @if $size != $breakpoint-default {
+        @include breakpoint($min: $size) {
+
+            @each $spacing in map-keys($spacings) {
+                $space: map-get($spacings, $spacing);
+                // Full margin
+                .m-#{$spacing}-#{$size} {
+                    margin: $space;
+                }
+
+                // Margin horizontal
+                .m-h-#{$spacing}-#{$size} {
+                    margin-left: $space;
+                    margin-right: $space;
+                }
+
+                // Margin vertical
+                .m-v-#{$spacing}-#{$size} {
+                    margin-top: $space;
+                    margin-bottom: $space;
+
+                }
+
+                // Margin top
+                .m-t-#{$spacing}-#{$size} {
+                    margin-top: $space;
+                }
+
+                // Margin right
+                .m-r-#{$spacing}-#{$size} {
+                    margin-right: $space;
+                }
+
+                // Margin bottom
+                .m-b-#{$spacing}-#{$size} {
+                    margin-bottom: $space;
+                }
+
+                // Margin left
+                .m-l-#{$spacing}-#{$size} {
+                    margin-left: $space;
+                }
+            }
+        }
+    }
+
+}

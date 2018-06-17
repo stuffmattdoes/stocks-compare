@@ -1,0 +1,124 @@
+// Catamaran
+@import url('https://fonts.googleapis.com/css?family=Catamaran');
+
+// Muli
+@import url('https://fonts.googleapis.com/css?family=Muli:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i');
+
+// Open Sans
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i');
+
+// $font-main: 'Muli';
+$font-body: 'Open Sans';
+$font-main: $font-body;
+
+.type {
+    &--heading-1 {
+        color: #2B1340;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 36px;
+        line-height: 1.38;
+        margin: 0 0 48px;
+    }
+
+    &--heading-2 {
+        color: #2B1340;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 30px;
+        line-height: 1.42;
+    }
+
+    &--heading-3 {
+        color: #2B1340;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 24px;
+        line-height: 1.33;
+    }
+
+    &--heading-4 {
+        color: #2B1340;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 19px;
+    }
+
+    &--heading-5 {
+        color: #2B1340;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 12px;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+    }
+
+    &--title {
+        color: #372D40;
+        font-family: $font-main;
+        font-weight: bold;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    &--body-1 {
+        color: #372D40;
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: normal;
+        line-height: 1.6;
+        margin: 0 0 24px;
+    }
+
+    &--body-2 {
+        color: #372D40;
+        font-family: $font-body;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 1.75;
+        opacity: 0.85;
+    }
+
+    &--link {
+        text-decoration: underline;
+    }
+
+    @include breakpoint($min: 'desktop') {
+        &--heading-1 {
+            font-size: 36px;
+            line-height: 1.38;
+            margin: 0 0 48px;
+        }
+
+        &--heading-2 {
+            font-size: 30px;
+            line-height: 1.42;
+        }
+
+        &--heading-3 {
+            font-size: 24px;
+            line-height: 1.33;
+        }
+
+        &--heading-4 {
+            font-size: 19px;
+        }
+
+        &--title {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        &--body-1 {
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0 0 24px;
+        }
+
+        &--body-2 {
+            font-size: 12px;
+            line-height: 1.75;
+            opacity: 0.85;
+        }
+    }
+}

@@ -1,0 +1,156 @@
+// Grid
+
+
+// Variables
+$grid-sizes: (
+    mobile: (
+        breakpoint: map-get($breakpoints, 'mobile'),
+        columns: 4,
+        gutter: 16px,   // Space between cells
+        padding: 24px   // Space within grid wrapper
+    ),
+    tablet: (
+        breakpoint: map-get($breakpoints, 'tablet'),
+        columns: 8,
+        gutter: 24px,
+        padding: 32px
+    ),
+    desktop: (
+        breakpoint: map-get($breakpoints, 'desktop'),
+        columns: 12,
+        gutter: 24px,
+        padding: 48px
+    )
+);
+
+$default-grid-size: 'mobile';   // Mobile-first
+$default-columns: map-get(map-get($grid-sizes, $default-grid-size), 'columns');
+$default-gutter: map-get(map-get($grid-sizes, $default-grid-size), 'gutter');
+$default-padding: map-get(map-get($grid-sizes, $default-grid-size), 'padding');
+$css-grid-support: true;
+
+
+// Mixins
+@mixin grid-cell-span($size, $span, $gutter) {
+    $columns: map-get(map-get($grid-sizes, $size), 'columns');
+    $percent: percentage($span / $columns);
+
+    @if $percent > 100% {
+       $percent: 100%;
+    }
+
+    width: calc(#{$percent} - #{$gutter});
+    width: calc(#{$percent} - var(--grid-gutter-#{$size}, #{$gutter}));
+
+    @if $css-grid-support {
+       @supports (display: grid) {
+           grid-column-end: span min($span, $columns);
+           margin: 0;
+           width: auto;
+       }
+   }
+}
+
+
+// Styles
+// :root {
+//     @each $size in map-keys($grid-sizes) {
+//         --grid-padding-#{$size}: map-get(map-get($grid-sizes, $size), 'padding');
+//         --grid-gutter-#{$size}: map-get(map-get($grid-sizes, $size), 'gutter');
+//     }
+// }
+
+.grid {
+    margin: 0 auto;
+    padding: 0 $default-padding;
+    width: 100%;
+}
+
+.grid__inner {
+    align-items: stretch;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: -$default-gutter / 2;
+    width: auto;
+
+    // CSS Grid support
+    @if $css-grid-support {
+        @supports (display: grid) {
+            display: grid;
+            grid-gap: $default-gutter;
+            grid-template-columns: repeat($default-columns, minmax(0, 1fr));
+            margin: 0;
+        }
+    }
+}
+
+.grid__cell {
+    // box-sizing: border-box;
+    margin: $default-gutter / 2;
+
+    @include grid-cell-span('mobile', 4, $default-gutter);
+
+    // Column spans
+    @for $span from 1 through 12 {
+        &--span-#{$span} {
+            @include grid-cell-span('mobile', $span, $default-gutter);
+        }
+    }
+}
+
+@each $size in map-keys($grid-sizes) {
+    $breakpoint: map-get(map-get($grid-sizes, $size), 'breakpoint');
+    $columns: map-get(map-get($grid-sizes, $size), 'columns');  // Maximum grid cells per row
+    $gutter: map-get(map-get($grid-sizes, $size), 'gutter');    // Space between cells
+    $padding: map-get(map-get($grid-sizes, $size), 'padding');  // Space inside grid wrapper
+
+    // We've already declared the default styles above, so skip those here
+    @if $size != $default-grid-size {
+        @include breakpoint($min: $size) {
+            .grid {
+                padding: 0 $padding;
+            }
+
+            .grid__inner {
+                margin: -$gutter / 2;
+
+                // CSS Grid support
+                @if $css-grid-support {
+                    @supports (display: grid) {
+                        grid-gap: $gutter;
+                        grid-template-columns: repeat($columns, minmax(0, 1fr));
+                        margin: 0;
+                    }
+                }
+            }
+
+            .grid__cell {
+                margin: $gutter / 2;
+
+                // CSS Grid support
+                @if $css-grid-support {
+                    @supports (display: grid) {
+                        grid-column-end: span $columns;
+                        margin: 0;
+                    }
+                }
+
+                // Column spans
+                @for $span from 1 through 12 {
+                    &--span-#{$span},
+                    &--span-#{$span}-#{$size} {
+                        @include grid-cell-span($size, $span, $gutter);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include breakpoint($min: 'desktop') {
+    .grid {
+        // max-width: 960px;
+        max-width: 1280px;
+    }
+}

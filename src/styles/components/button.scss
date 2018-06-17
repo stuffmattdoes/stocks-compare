@@ -1,0 +1,61 @@
+.button {
+    @extend .type--title;
+    border: none;
+    border-radius: 4px;
+    display: inline-block;
+    font-family: 'Open Sans';
+    font-weight: bold;
+    margin-top: 24px;
+    outline: none;
+    padding: 14px 32px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 150ms;
+
+    &:disabled {
+        animation: none;
+        background: rgba(#2B1340, 0.1);
+        box-shadow: none;
+        color: rgba(#2B1340, 0.6);
+
+        &:hover {
+            cursor: auto;
+        }
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &--full {
+        width: 100%;
+    }
+
+    &--magical {
+        @include linear-gradient-vertical(#43E6C2, #26CBA6);
+        @extend .magical-l;
+        box-shadow: 0 4px 14px rgba(#26CBA6, 0.4);
+        color: #2B1340;
+    }
+
+    &--outline {
+        background: none;
+        border: 1px solid rgba(#80718C, 0.8);
+        padding: 8px 32px;
+
+        &:hover {
+            background-color: rgba(165, 136, 191, 0.1);
+            border-color: #372D40;
+        }
+    }
+
+    &--primary {
+        color: #2B1340;
+        background-color: #34D8B3;
+    }
+
+    &--small {
+        font-size: 12px;
+    }
+}

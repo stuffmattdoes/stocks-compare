@@ -1,0 +1,84 @@
+
+.text-center {
+    display: block;
+    text-align: center;
+}
+
+.text-left {
+    display: block;
+    text-align: left;
+}
+
+.text-right {
+    display: block;
+    text-align: right;
+}
+
+
+// Icon text
+.icon-text {
+    align-items: center;
+    display: inline-flex;
+
+    svg {
+        margin-right: 4px;
+    }
+}
+
+
+// Formatting
+.text-trunctate {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+
+// Hide Text
+.text-hide {
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+
+// Responsive alignment
+@each $size in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $size);
+
+    @if $size != $breakpoint-default {
+        @include breakpoint($min: $size) {
+            .text-center-#{$size} {
+                display: block;
+                text-align: center;
+            }
+
+            .text-left-#{$size} {
+                display: block;
+                text-align: left;
+            }
+
+            .text-right-#{$size} {
+                display: block;
+                text-align: right;
+            }
+
+			.text-hide-#{$size} {
+			    font: 0/0 a;
+			    color: transparent;
+			    text-shadow: none;
+			    background-color: transparent;
+			    border: 0;
+			}
+        }
+    }
+}

@@ -1,0 +1,23 @@
+// Element order
+// Pretty much only works for children of Flex and CSS grids
+
+@for $span from 1 through 12 {
+    .order-#{$span} {
+        order: $span;
+    }
+}
+
+// Reorder flex child elements per breakpoint
+@each $size in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $size);
+
+    @if $size != $breakpoint-default {
+        @include breakpoint($min: $size) {
+            @for $span from 1 through 12 {
+                .order-#{$span}-#{$size} {
+                    order: $span;
+                }
+            }
+        }
+    }
+}

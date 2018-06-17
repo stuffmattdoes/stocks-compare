@@ -1,0 +1,41 @@
+// Breakpoints
+$screen-sizes: (
+    xxsmall: 480px,
+    xsmall: 600px,
+    small: 840px,
+    medium: 960px,
+    large: 1280px,
+    xlarge: 1440px,
+    xxlarge: 1600px,
+);
+
+$breakpoints: (
+    mobile: 320px, // map-get($screen-sizes, 'xsmall'),
+    tablet: 768px,  //map-get($screen-sizes, 'small'),
+    desktop: 960px, // map-get($screen-sizes, 'medium')
+);
+
+$breakpoint-default: 'mobile';
+
+@mixin breakpoint($min: null, $max: null) {
+    @if $min != null and $max != null {
+        $breakpointMin: map-get($breakpoints, $min);
+        $breakpointMax: map-get($breakpoints, $max);
+
+        @media screen and (min-width: $breakpointMin) and (max-width: $breakpointMax - 1) {
+            @content;
+        }
+    } @else if $min != null {
+        $breakpointMin: map-get($breakpoints, $min);
+
+        @media screen and (min-width: $breakpointMin) {
+            @content;
+        }
+    } @else {
+        $breakpointMax: map-get($breakpoints, $max);
+
+        @media screen and (max-width: $breakpointMax - 1) {
+            @content;
+        }
+    }
+}

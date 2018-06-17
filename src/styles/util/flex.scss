@@ -1,0 +1,82 @@
+// Flex displays
+
+.d-flex {
+    align-items: center;
+    display: flex !important;
+    justify-content: space-between;
+}
+
+.d-inline-flex {
+    display: inline-flex !important;
+}
+
+// Modifiers
+.flex-col {
+    flex-direction: column !important;
+}
+
+.flex-row {
+    flex-direction: row !important;
+}
+
+.flex-end {
+    justify-content: flex-end !important;
+}
+
+.flex-start {
+    justify-content: flex-start !important;
+}
+
+.flex-mid {
+    justify-content: center !important;
+    // height: 1px; // For IE, will be overridden by flex: https://stackoverflow.com/questions/19371626/flexbox-not-centering-vertically-in-ie
+}
+
+.flex-spread {
+    justify-content: space-between !important;
+}
+
+// Breakpoint stuff
+@each $size in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $size);
+
+    @if $size != $breakpoint-default {
+        @include breakpoint($min: $size) {
+            .d-flex-#{$size} {
+                align-items: center;
+                display: flex !important;
+                justify-content: space-between;
+            }
+
+            .d-inline-flex-#{$size} {
+                display: inline-flex !important;
+            }
+
+
+            // Modifiers
+            .flex-col-#{$size} {
+                flex-direction: column !important;
+            }
+
+            .flex-row-#{$size} {
+                flex-direction: row !important;
+            }
+
+            .flex-end-#{$size} {
+                justify-content: flex-end !important;
+            }
+
+            .flex-start-#{$size} {
+                justify-content: flex-start !important;
+            }
+
+            .flex-mid-#{$size} {
+                justify-content: center !important;
+            }
+
+            .flex-spread-#{$size} {
+                justify-content: space-between !important;
+            }
+        }
+    }
+}

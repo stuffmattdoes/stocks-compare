@@ -1,11 +1,28 @@
 .color-select {
-    &__preview {
+    position: relative;
+
+    &__color {
         border-radius: 4px;
         height: 24px;
+        margin: 4px;
         width: 24px;
 
         &:hover {
             cursor: pointer;
+        }
+    }
+
+    &__colors {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: none;
+        flex-wrap: wrap;
+        position: absolute;
+        width: 66px;
+
+        &.active {
+            display: flex;
         }
     }
 }

@@ -20,16 +20,9 @@ module.exports = merge(compiler, {
         hot: true,
         // Open a new web browser page on server initialization
         open: true,
-        publicPath: compiler.output.publicPath,
-        proxy: {
-            // '/api': 'http://localhost:3001'
-            '/api': {
-                changeOrigin: true,
-                secure: false,
-                target: 'https://sigma-api-staging.herokuapp.com'
-            }
-        }
+        publicPath: compiler.output.publicPath
     },
+    mode: 'development',
     module: {
         rules: [
             {
@@ -65,16 +58,10 @@ module.exports = merge(compiler, {
         ]
     },
     plugins: [
-        new DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('development')
-            }
-        }),
         new HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             inject: true,
             template: path.join('public', 'index.html')
-        }),
-        new NamedModulesPlugin()
+        })
     ]
 });

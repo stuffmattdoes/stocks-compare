@@ -13,6 +13,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = merge(compiler, {
+    mode: 'development',
     module: {
         rules: [
             // Resolves & bundles all SASS dependencies (.scss syntax)
@@ -65,11 +66,6 @@ module.exports = merge(compiler, {
                 to: path.join('static')
             }
         ]),
-        new DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('production')
-            }
-        }),
         new ExtractTextPlugin({
             filename: path.join('static', 'css', '[name].[hash].css')
         }),
@@ -89,9 +85,6 @@ module.exports = merge(compiler, {
                 minifyURLs: true,
             },
             template: path.join('public', 'index.html')
-        }),
-        new UglifyJSPlugin({
-            sourceMap: true
         })
     ]
 });

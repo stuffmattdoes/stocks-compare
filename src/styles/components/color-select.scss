@@ -1,0 +1,11 @@
+.color-select {
+    &__preview {
+        border-radius: 4px;
+        height: 24px;
+        width: 24px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

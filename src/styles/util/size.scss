@@ -1,0 +1,61 @@
+$sizes: (
+    0: 0px,
+    xs: 8px,
+    s: 16px,
+    m: 24px,
+    l: 32px,
+    xl: 48px,
+    xxl: 64px
+);
+
+@each $size in map-keys($sizes) {
+    $sizeVal: map-get($sizes, $size);
+
+    // height
+    .s-v-#{$size} {
+        margin: $sizeVal;
+    }
+
+    // width
+    .s-h-#{$size} {
+        width: $sizeVal;
+    }
+
+    // height & width
+    .s-#{$size} {
+        height: $sizeVal;
+        width: $sizeVal;
+    }
+}
+
+// Breakpoint-responsive spacing classes
+@each $breakpointSize in map-keys($breakpoints) {
+    $breakpoint: map-get($breakpoints, $breakpointSize);
+
+    @if $breakpointSize != $breakpoint-default {
+        @include breakpoint($min: $breakpointSize) {
+
+            @each $size in map-keys($sizes) {
+                $sizeVal: map-get($sizes, $size);
+
+                // height
+                .s-v-#{$size}-#{$breakpointSize} {
+                    margin: $sizeVal;
+                }
+
+                // width
+                .s-h-#{$size}-#{$breakpointSize} {
+                    width: $sizeVal;
+                }
+
+                // height & width
+                .s-#{$size}-#{$breakpointSize} {
+                    height: $sizeVal;
+                    width: $sizeVal;
+                }
+
+            }
+        }
+    }
+
+}

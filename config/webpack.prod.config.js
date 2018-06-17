@@ -13,7 +13,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = merge(compiler, {
-    mode: 'development',
+    mode: 'production',
     module: {
         rules: [
             // Resolves & bundles all SASS dependencies (.scss syntax)

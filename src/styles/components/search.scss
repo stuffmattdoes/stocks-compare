@@ -1,0 +1,14 @@
+.search {
+    align-items: center;
+    display: flex;
+    padding: 0 16px;
+
+    &__input {
+        appearance: none;
+        border: none;
+        color: rgba(0, 0, 0, 0.85);
+        font-size: 15px;
+        outline: none;
+        padding: 16px;
+    }
+}

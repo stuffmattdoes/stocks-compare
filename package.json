@@ -3,6 +3,8 @@
     "version": "1.0.0",
     "private": true,
     "dependencies": {
+        "axios": "^0.18.0",
+        "classnames": "^2.2.6",
         "react": "^16.4.1",
         "react-dom": "^16.4.1"
     },
@@ -25,10 +27,8 @@
         "jest": "^23.1.0",
         "node-sass": "^4.9.0",
         "postcss-loader": "^2.1.5",
-        "redux-logger": "^3.0.6",
         "sass-loader": "^7.0.3",
         "style-loader": "^0.21.0",
-        "uglifyjs-webpack-plugin": "^1.2.5",
         "webpack": "^4.12.0",
         "webpack-bundle-analyzer": "^2.13.1",
         "webpack-cli": "^3.0.8",
@@ -47,7 +47,7 @@
     },
     "scripts": {
         "build": "webpack --config ./config/webpack.prod.config.js",
-        "start": "NODE_ENV=dev webpack-dev-server --config ./config/webpack.dev.config.js",
+        "start": "webpack-dev-server --config ./config/webpack.dev.config.js",
         "test": "NODE_ENV=test jest --watch",
         "watch": "webpack --config ./config/webpack.dev.config.js --watch"
     }

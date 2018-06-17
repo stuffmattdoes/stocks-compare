@@ -4,10 +4,14 @@
 // Foundation;
 @import 'foundation/breakpoints';
 @import 'foundation/color';
+@import 'foundation/grid';
 @import 'foundation/mixins';
 @import 'foundation/typography';
 
 // Components
+@import 'components/color-select';
+@import 'components/data-table';
+@import 'components/search';
 
 // Pages
 
@@ -15,6 +19,7 @@
 @import 'util/display';
 @import 'util/flex';
 @import 'util/order';
+@import 'util/size';
 @import 'util/spacing';
 @import 'util/text';
 

@@ -28,7 +28,7 @@ class ColorSelect extends Component {
 
         this.state = {
             color: this.colors[0],
-            showColors: true
+            showColors: false
         }
     }
 
@@ -37,7 +37,7 @@ class ColorSelect extends Component {
 
         return (
             <div className='color-select'>
-                <div className='color-select__color' onClick={e => this.setState({ showColors: true })} style={{ backgroundColor: color }}></div>
+                <div className='color-select__color color-select__color--preview' onClick={e => this.setState({ showColors: true })} style={{ backgroundColor: color }}></div>
                 <ul className={classnames([
                     'color-select__colors',
                     { 'active': showColors }

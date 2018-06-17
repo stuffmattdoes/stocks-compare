@@ -106,7 +106,7 @@ class App extends Component {
                     <table className='data-table'>
                         <thead className='data-table__head'>
                             <tr className='data-table__row'>
-                                <th className='data-table__cell'>Color</th>
+                                <th className='data-table__cell'>Graph</th>
                                 <th className='data-table__cell'>Company</th>
                                 <th className='data-table__cell'>Stock Symbol</th>
                                 <th className='data-table__cell'>Market</th>

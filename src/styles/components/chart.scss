@@ -1,4 +1,12 @@
 .ct-series {
+    &:hover {
+        cursor: pointer;
+
+        .ct-line{
+            stroke-width: 3px;
+        }
+    }
+
     &.active {
         animation: 'dashOffset' 1s linear infinite;
         stroke-dasharray: 20px 5px;

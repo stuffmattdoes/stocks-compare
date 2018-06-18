@@ -16,6 +16,7 @@ class App extends Component {
         super(props);
         this.state = {
             chartData: mockData.data,
+            // chartDataNorm: [],
             companies: [],
             err: null,
             range: '1m',
@@ -30,7 +31,7 @@ class App extends Component {
         this.searchInput = null;
         this.tabs = [
             {
-                label: '1 Day',
+                label: 'Today',
                 value: '1d'
             },
             {
@@ -58,6 +59,7 @@ class App extends Component {
         // Methods
         this.getStock = this.getStock.bind(this);
         this.highlightSeries = this.highlightSeries.bind(this);
+        this.normalizeChartDates = this.normalizeChartDates.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onUpdateCompany = this.onUpdateCompany.bind(this);
@@ -70,6 +72,7 @@ class App extends Component {
     }
 
     componentDidUpdate() {
+        console.log('componentDidUpdate');
         this.updateChart();
     }
 
@@ -97,6 +100,7 @@ class App extends Component {
 
     updateChart() {
         const { chartData, range } = this.state;
+        console.log('updateChart', chartData);
 
         // Handle daily trades
         // if (range !== '1d') {
@@ -115,10 +119,11 @@ class App extends Component {
         //         outputs.push(price);
         //     });
         // }
+        const chartDataNorm = this.normalizeChartDates(chartData);
 
         this.chartist.update({
-            labels: chartData[0].chart.map(chart => chart.label),
-            series: chartData.map(company => ({
+            labels: chartDataNorm[0].chart.map(chart => chart.label),
+            series: chartDataNorm.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => chart.close),
                 name: `${company.quote.symbol} Series`
@@ -132,6 +137,15 @@ class App extends Component {
         this.state.chartData.forEach(company => {
             document.querySelector(`.ct-series.series-${company.quote.symbol}`).style.stroke = company.color;
         });
+    }
+
+    normalizeChartDates(chartData) {
+        const maxDates = chartData.reduce((acc, chart, i) => acc > chart.chart.length ? acc : chart.chart.length, 0);
+
+        return chartData.map(chart => ({
+            ...chart,
+            chart: new Array(maxDates - chart.chart.length).concat(chart.chart)
+        }));
     }
 
     getCompanies() {
@@ -149,10 +163,15 @@ class App extends Component {
 
         axios.get(`https://api.iextrading.com/1.0/stock/${search}/batch?types=chart,quote,logo&range=${range}`)
             .then(res => {
+                const newCompany = {
+                    ...res.data,
+                    color: '#f44336'
+                };
+
                 this.setState({
-                    chartData: chartData.concat([ res.data ]),
+                    chartData: chartData.concat([ newCompany ]),
                     err: null
-                });
+                }, this.updateChart);
             })
             .catch(err => this.setState({ err: err.response.data }) );
     }
@@ -170,8 +189,10 @@ class App extends Component {
 
                 this.setState({
                     chartData: newChart,
+                    // chartDataNorm: this.normalizeChartDates(newChart),
                     err: null
-                }, this.updateChart);
+                });
+                // }, this.updateChart);
             })
             .catch(err => this.setState({ err: err.response }) );
     }
@@ -241,6 +262,7 @@ class App extends Component {
 
     render() {
         const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
+        // console.log(chartData);
 
         return (
             <div className='app'>
@@ -251,8 +273,8 @@ class App extends Component {
                     </ul>
                     <div className='ct-chart'></div>
                     <div>
-                        <div><input checked={showSharePrice} id='Checkbox-Share-Price' type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
-                        <div><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox'/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
+                        <div><input checked={showSharePrice} id='Checkbox-Share-Price' onChange={e => this.setState({ showSharePrice: e.target.checked })} type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
+                        <div><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox' onChange={e => this.setState({ showTradeVol: e.target.checked })}/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
                     </div>
                     <table className='data-table'>
                         <thead className='data-table__head'>

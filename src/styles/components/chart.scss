@@ -1,0 +1,9 @@
+.ct-line {
+    stroke-width: 2px;
+}
+
+.ct-label {
+    &.ct-horizontal {
+        white-space: nowrap;
+    }
+}

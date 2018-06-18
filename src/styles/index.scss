@@ -1,5 +1,6 @@
 // Vendor
 @import 'vendor/reset';
+@import '~chartist/dist/chartist.min.css';
 
 // Foundation;
 @import 'foundation/breakpoints';
@@ -9,9 +10,11 @@
 @import 'foundation/typography';
 
 // Components
+@import 'components/chart';
 @import 'components/color-select';
 @import 'components/data-table';
 @import 'components/search';
+@import 'components/tabs';
 
 // Pages
 

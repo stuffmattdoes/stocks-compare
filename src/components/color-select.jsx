@@ -6,7 +6,7 @@ class ColorSelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            color: this.props.color || '#fff',
+            color: this.props.color || '#f44336',
             showColors: false
         }
 

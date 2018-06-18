@@ -18,7 +18,9 @@ class App extends Component {
             chartData: mockData.data,
             companies: [],
             err: null,
-            range: '1m'
+            range: '1m',
+            showSharePrice: true,
+            showTradeVol: true
         }
         this.chartist = null;
         this.markets = {
@@ -122,7 +124,7 @@ class App extends Component {
             }))
         }, {
             axisX: {
-                labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 5)  === 0 ? value : null,
+                labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
             }
         }, true);
 
@@ -227,8 +229,7 @@ class App extends Component {
     }
 
     render() {
-        const { chartData, err, range } = this.state;
-        console.log(chartData);
+        const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
 
         return (
             <div className='app'>
@@ -238,6 +239,10 @@ class App extends Component {
                         { this.tabs.map(tab => <li className={classnames([ 'tab', { 'active': range === tab.value }])} key={tab.value} onClick={e => this.onClickTab(tab.value)}>{tab.label}</li>)}
                     </ul>
                     <div className='ct-chart'></div>
+                    <div>
+                        <div><input checked={showSharePrice} id='Checkbox-Share-Price' type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
+                        <div><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox'/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
+                    </div>
                     <table className='data-table'>
                         <thead className='data-table__head'>
                             <tr className='data-table__row'>

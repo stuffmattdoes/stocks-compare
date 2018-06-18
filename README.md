@@ -1,1 +1,1 @@
-# React Webpack Starter Code #
+# Compare Stocks

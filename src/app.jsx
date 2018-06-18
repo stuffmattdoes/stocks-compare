@@ -57,6 +57,7 @@ class App extends Component {
 
         // Methods
         this.getStock = this.getStock.bind(this);
+        this.highlightSeries = this.highlightSeries.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onUpdateCompany = this.onUpdateCompany.bind(this);
@@ -200,9 +201,19 @@ class App extends Component {
         });
     }
 
+    highlightSeries(symbol, highlighted) {
+        const series = document.querySelector(`.ct-series.series-${symbol}`);
+
+        if (highlighted) {
+            series.classList.add('active');
+        } else {
+            series.classList.remove('active');
+        }
+    }
+
     renderCompany(company) {
         return (
-            <tr className='data-table__row' key={company.quote.symbol}>
+            <tr className='data-table__row' key={company.quote.symbol} onMouseOver={e => this.highlightSeries(company.quote.symbol, true)} onMouseOut={e => this.highlightSeries(company.quote.symbol, false)}>
                 <td className='data-table__cell'>
                     <ColorSelect color={company.color} onChange={newColor => this.onUpdateCompany(company.quote.symbol, { color: newColor })}/>
                 </td>

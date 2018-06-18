@@ -1,9 +1,30 @@
-.ct-line {
-    stroke-width: 2px;
+.ct-series {
+    &.active {
+        animation: 'dashOffset' 1s linear infinite;
+        stroke-dasharray: 20px 5px;
+
+        .ct-line {
+            stroke-width: 3px;
+        }
+    }
+
+    .ct-line {
+        stroke-width: 2px;
+    }
 }
 
 .ct-label {
     &.ct-horizontal {
         white-space: nowrap;
+    }
+}
+
+@keyframes dashOffset {
+    0% {
+        stroke-dashoffset: 0;
+    }
+
+    100% {
+        stroke-dashoffset: -25px;
     }
 }

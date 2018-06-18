@@ -8,20 +8,29 @@ import ColorSelect from './components/color-select';
 import Icon from './components/icon';
 // import Search from './components/search';
 
+// Mock data
+import mockData from '../data.json';
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            chartData: [],
+            chartData: mockData.data,
             companies: [],
             err: null,
             range: '1m'
+        }
+
+        this.markets = {
+            'New York Stock Exchange': 'NYSE',
+            'Nasdaq Global Select': 'NASDAQ'
         }
 
         this.searchInput = null;
         this.getStock = this.getStock.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onUpdateCompany = this.onUpdateCompany.bind(this);
         this.renderCompany = this.renderCompany.bind(this);
     }
 
@@ -59,6 +68,14 @@ class App extends Component {
         this.searchInput.value = '';
     }
 
+    onUpdateCompany(companySymbol, update) {
+        let newChartData = this.state.chartData.map(company => company.quote.symbol === companySymbol ? Object.assign({}, company, update) : company);
+
+        this.setState({
+            chartData: newChartData
+        });
+    }
+
     onRemoveCompany(companySymbol) {
         this.setState({
             chartData: this.state.chartData.filter(company => company.quote.symbol !== companySymbol)
@@ -69,18 +86,15 @@ class App extends Component {
         return (
             <tr className='data-table__row' key={company.quote.symbol}>
                 <td className='data-table__cell'>
-                    <ColorSelect />
+                    <ColorSelect color={company.color} onChange={newColor => this.onUpdateCompany(company.quote.symbol, { color: newColor })}/>
                 </td>
                 <td className='data-table__cell' key={company.quote.symbol}>
                     <img className='m-r-s s-l' src={`${company.logo.url}`} />
-                    {company.quote.companyName}
+                    {company.quote.companyName} ({company.quote.symbol})
                     <span className='data-table__delete' onClick={e => this.onRemoveCompany(company.quote.symbol)}><Icon icon='close' fill='red' /></span>
                 </td>
                 <td className='data-table__cell'>
-                    {company.quote.symbol}
-                </td>
-                <td className='data-table__cell'>
-                    {company.quote.primaryExchange}
+                    {this.markets[company.quote.primaryExchange] || company.quote.primaryExchange}
                 </td>
                 <td className={classnames([
                         'data-table__cell',
@@ -107,8 +121,7 @@ class App extends Component {
                         <thead className='data-table__head'>
                             <tr className='data-table__row'>
                                 <th className='data-table__cell'>Graph</th>
-                                <th className='data-table__cell'>Company</th>
-                                <th className='data-table__cell'>Stock Symbol</th>
+                                <th className='data-table__cell'>Company (Symbol)</th>
                                 <th className='data-table__cell'>Market</th>
                                 <th className='data-table__cell'>Today's Change</th>
                                 <th className='data-table__cell'>Share Price (USD)</th>

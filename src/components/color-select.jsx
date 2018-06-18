@@ -5,6 +5,11 @@ import React, { Component } from 'react';
 class ColorSelect extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            color: this.props.color || '#fff',
+            showColors: false
+        }
+
         this.colors = [
             '#f44336',
             '#e91e63',
@@ -25,11 +30,16 @@ class ColorSelect extends Component {
             '#795548',
             '#607d8b'
         ];
+        this.onClickColor = this.onClickColor.bind(this);
+    }
 
-        this.state = {
-            color: this.colors[0],
+    onClickColor(color) {
+        this.setState({
+            color,
             showColors: false
-        }
+        });
+
+        this.props.onChange(color);
     }
 
     render() {
@@ -37,12 +47,12 @@ class ColorSelect extends Component {
 
         return (
             <div className='color-select'>
-                <div className='color-select__color color-select__color--preview' onClick={e => this.setState({ showColors: true })} style={{ backgroundColor: color }}></div>
+                <div className='color-select__color color-select__color--preview' onClick={e => this.setState({ showColors: !showColors })} style={{ backgroundColor: color }}></div>
                 <ul className={classnames([
                     'color-select__colors',
                     { 'active': showColors }
                 ])}>
-                    { this.colors.map(col => <li className='color-select__color' key={col} onClick={e => this.setState({ color: col, showColors: false })} style={{ backgroundColor: col }}>
+                    { this.colors.map(col => <li className='color-select__color' key={col} onClick={e => this.onClickColor(col)} style={{ backgroundColor: col }}>
                         { color === col ? <Icon icon='checkmark' fill='#fff' /> : null }
                     </li>)}
                 </ul>

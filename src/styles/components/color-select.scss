@@ -24,6 +24,7 @@
         flex-wrap: wrap;
         position: absolute;
         width: 66px;
+        z-index: 1;
 
         &.active {
             display: flex;

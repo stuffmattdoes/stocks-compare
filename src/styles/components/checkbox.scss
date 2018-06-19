@@ -1,0 +1,25 @@
+.checkbox {
+    align-items: center;
+    display: inline-flex;
+    padding: 16px;
+
+    &__wrapper {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        text-align: center;
+    }
+
+    input {
+        margin-right: 8px;
+
+        &:checked + label {
+            color: black;
+        }
+    }
+
+    label {
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 14px;
+    }
+}

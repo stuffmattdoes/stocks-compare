@@ -1,29 +1,68 @@
-.ct-series {
-    &:hover {
-        cursor: pointer;
+.chart-container {
+    position: relative;
+}
 
-        .ct-line{
-            stroke-width: 3px;
-        }
-    }
+.ct-chart--line {
+    position: relative;
+    z-index: 1;
+}
 
-    &.active {
-        animation: 'dashOffset' 1s linear infinite;
-        stroke-dasharray: 20px 5px;
+.ct-chart--bar {
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
 
-        .ct-line {
-            stroke-width: 3px;
-        }
-    }
-
-    .ct-line {
-        stroke-width: 2px;
+.ct-grid {
+    &.ct-horizontal:first-of-type,
+    &.ct-horizontal + .ct-vertical {
+        stroke-dasharray: none;
     }
 }
 
 .ct-label {
     &.ct-horizontal {
         white-space: nowrap;
+    }
+}
+
+.ct-chart {
+    &--bar {
+        .ct-series {
+            opacity: 0.2;
+
+            &.active {
+                opacity: 0.6;
+            }
+        }
+    }
+
+    &--line {
+        .ct-series {
+            stroke: black;
+
+            &:hover {
+                cursor: pointer;
+
+                .ct-line {
+                    stroke-width: 3px;
+                }
+            }
+
+            &.active {
+                animation: 'dashOffset' 1s linear infinite;
+                stroke-dasharray: 20px 5px;
+
+                .ct-line {
+                    stroke-width: 3px;
+                }
+            }
+
+            .ct-line {
+                stroke-width: 2px;
+            }
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 // Libraries
 import axios from 'axios';
 import Chartist from 'chartist/dist/chartist.min.js';
+// import HoverLabels from './components/hover-labels';
 import classnames from 'classnames';
 import React, { Component } from 'react';
 
@@ -16,6 +17,7 @@ class App extends Component {
         super(props);
         this.state = {
             chartData: mockData.data,
+            // chartData: [],
             // chartDataNorm: [],
             companies: [],
             err: null,
@@ -23,7 +25,7 @@ class App extends Component {
             showSharePrice: true,
             showTradeVol: true
         }
-        this.chartist = null;
+        this.chartLine = null;
         this.markets = {
             'New York Stock Exchange': 'NYSE',
             'Nasdaq Global Select': 'NASDAQ'
@@ -68,11 +70,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.createChart();
+        this.createChartLine();
+        // this.createChartBar();
+        window.addEventListener('resize', this.updateChart);
     }
 
     componentDidUpdate() {
-        console.log('componentDidUpdate');
         this.updateChart();
     }
 
@@ -80,27 +83,56 @@ class App extends Component {
         this.getCompanies();
     }
 
-    createChart() {
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateChart);
+    }
+
+    createChartLine() {
         const { chartData } = this.state;
 
-        this.chartist = new Chartist.Line('.ct-chart', {
+        this.chartLine = new Chartist.Line('.ct-chart--line', {
             series: chartData.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => chart.close),
-                name: `${company.quote.symbol} Series`
+                name: `${company.quote.symbol} Line Series`
             }))
         }, {
-            axisX: {
-                showGrid: false
-            },
+            // axisX: {
+            //     showGrid: false
+            // },
+            fullWidth: true,
             height: 400,
             showPoint: false
         });
     }
 
+    createChartBar() {
+        const { chartData } = this.state;
+
+        this.chartBars = new Chartist.Bar('.ct-chart--bar', {
+            series: chartData.map(company => ({
+                className: `series-${company.quote.symbol}`,
+                data: company.chart.map(chart => chart.close),
+                name: `${company.quote.symbol} Bar Series`
+            }))
+        }, {
+            axisX: {
+                showGrid: false,
+                showLabel: false
+            },
+            axisY: {
+                showGrid: false,
+                showLabel: false
+            },
+            fullWidth: true,
+            height: 400,
+            stackBars: true
+        });
+    }
+
     updateChart() {
         const { chartData, range } = this.state;
-        console.log('updateChart', chartData);
+        // console.log('updateChart');
 
         // Handle daily trades
         // if (range !== '1d') {
@@ -120,13 +152,15 @@ class App extends Component {
         //     });
         // }
         const chartDataNorm = this.normalizeChartDates(chartData);
+        console.log(chartDataNorm);
 
-        this.chartist.update({
-            labels: chartDataNorm[0].chart.map(chart => chart.label),
+        // Update Line Chart
+        this.chartLine.update({
+            labels: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
             series: chartDataNorm.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => chart.close),
-                name: `${company.quote.symbol} Series`
+                name: `${company.quote.symbol} Line Series`
             }))
         }, {
             axisX: {
@@ -134,18 +168,35 @@ class App extends Component {
             }
         }, true);
 
+        // Update Bar Char
+        // this.chartBars.update({
+        //     series: chartData.map(company => ({
+        //         className: `series-${company.quote.symbol}`,
+        //         data: company.chart.map(chart => chart.close),
+        //         name: `${company.quote.symbol} Bar Series`
+        //     }))
+        // }, {}, true);
+
         this.state.chartData.forEach(company => {
-            document.querySelector(`.ct-series.series-${company.quote.symbol}`).style.stroke = company.color;
+            document.querySelectorAll(`.series-${company.quote.symbol}`).forEach(elem => elem.style.stroke = company.color);
         });
     }
 
     normalizeChartDates(chartData) {
         const maxDates = chartData.reduce((acc, chart, i) => acc > chart.chart.length ? acc : chart.chart.length, 0);
 
-        return chartData.map(chart => ({
-            ...chart,
-            chart: new Array(maxDates - chart.chart.length).concat(chart.chart)
-        }));
+        return chartData.map(chart => {
+            if (chart.chart.length === maxDates) {
+                return chart;
+            } else {
+                chart.chart.unshift({ close: 0 });
+
+                return {
+                    ...chart,
+                    chart: new Array(maxDates - chart.chart.length).concat(chart.chart)
+                }
+            }
+        });
     }
 
     getCompanies() {
@@ -223,12 +274,15 @@ class App extends Component {
     }
 
     highlightSeries(symbol, highlighted) {
-        const series = document.querySelector(`.ct-series.series-${symbol}`);
+        const lineSeries = document.querySelector(`.ct-chart--line .series-${symbol}`);
+        // const barSeries = document.querySelector(`.ct-chart--bar .series-${symbol}`);
 
         if (highlighted) {
-            series.classList.add('active');
+            lineSeries.classList.add('active');
+            // barSeries.classList.add('active');
         } else {
-            series.classList.remove('active');
+            lineSeries.classList.remove('active');
+            // barSeries.classList.remove('active');
         }
     }
 
@@ -262,21 +316,23 @@ class App extends Component {
 
     render() {
         const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
-        // console.log(chartData);
 
         return (
             <div className='app'>
                 <div className='container'>
-                    <h1 className='type--heading-1'>Compare Some Stocks, Eh?</h1>
+                    <h1 className='type--heading-1'>Compare Some Stocks</h1>
                     <ul className='tabs'>
                         { this.tabs.map(tab => <li className={classnames([ 'tab', { 'active': range === tab.value }])} key={tab.value} onClick={e => this.onClickTab(tab.value)}>{tab.label}</li>)}
                     </ul>
-                    <div className='ct-chart'></div>
-                    <div>
-                        <div><input checked={showSharePrice} id='Checkbox-Share-Price' onChange={e => this.setState({ showSharePrice: e.target.checked })} type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
-                        <div><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox' onChange={e => this.setState({ showTradeVol: e.target.checked })}/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
+                    <div className='chart-container'>
+                        <div className='ct-chart ct-chart--line'></div>
+                        <div className='ct-chart ct-chart--bar'></div>
                     </div>
-                    <table className='data-table'>
+                    <div className='checkbox__wrapper d-none'>
+                        <div className='checkbox'><input checked={showSharePrice} id='Checkbox-Share-Price' onChange={e => this.setState({ showSharePrice: e.target.checked })} type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
+                        <div className='checkbox'><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox' onChange={e => this.setState({ showTradeVol: e.target.checked })}/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
+                    </div>
+                    <table className='data-table m-t-m'>
                         <thead className='data-table__head'>
                             <tr className='data-table__row'>
                                 <th className='data-table__cell'>Graph</th>

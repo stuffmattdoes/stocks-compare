@@ -21,6 +21,7 @@ class App extends Component {
             // chartDataNorm: [],
             companies: [],
             err: null,
+            highlightedSeries: null,
             range: '1m',
             showSharePrice: true,
             showTradeVol: true
@@ -60,7 +61,6 @@ class App extends Component {
 
         // Methods
         this.getStock = this.getStock.bind(this);
-        this.highlightSeries = this.highlightSeries.bind(this);
         this.normalizeChartDates = this.normalizeChartDates.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -152,13 +152,15 @@ class App extends Component {
         //     });
         // }
         const chartDataNorm = this.normalizeChartDates(chartData);
-        console.log(chartDataNorm);
 
         // Update Line Chart
         this.chartLine.update({
             labels: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
             series: chartDataNorm.map(company => ({
-                className: `series-${company.quote.symbol}`,
+                className: classnames([
+                    `series-${company.quote.symbol}`,
+                    { 'active': this.state.highlightedSeries === company.quote.symbol }
+                ]),
                 data: company.chart.map(chart => chart.close),
                 name: `${company.quote.symbol} Line Series`
             }))
@@ -273,22 +275,22 @@ class App extends Component {
         });
     }
 
-    highlightSeries(symbol, highlighted) {
-        const lineSeries = document.querySelector(`.ct-chart--line .series-${symbol}`);
-        // const barSeries = document.querySelector(`.ct-chart--bar .series-${symbol}`);
-
-        if (highlighted) {
-            lineSeries.classList.add('active');
-            // barSeries.classList.add('active');
-        } else {
-            lineSeries.classList.remove('active');
-            // barSeries.classList.remove('active');
-        }
-    }
+    // highlightSeries(symbol, highlighted) {
+    //     const lineSeries = document.querySelector(`.ct-chart--line .series-${symbol}`);
+    //     // const barSeries = document.querySelector(`.ct-chart--bar .series-${symbol}`);
+    //
+    //     if (highlighted) {
+    //         lineSeries.classList.add('active');
+    //         // barSeries.classList.add('active');
+    //     } else {
+    //         lineSeries.classList.remove('active');
+    //         // barSeries.classList.remove('active');
+    //     }
+    // }
 
     renderCompany(company) {
         return (
-            <tr className='data-table__row' key={company.quote.symbol} onMouseOver={e => this.highlightSeries(company.quote.symbol, true)} onMouseOut={e => this.highlightSeries(company.quote.symbol, false)}>
+            <tr className='data-table__row' key={company.quote.symbol} onMouseOver={e => this.setState({ highlightedSeries: company.quote.symbol })}>
                 <td className='data-table__cell'>
                     <ColorSelect color={company.color} onChange={newColor => this.onUpdateCompany(company.quote.symbol, { color: newColor })}/>
                 </td>
@@ -332,7 +334,7 @@ class App extends Component {
                         <div className='checkbox'><input checked={showSharePrice} id='Checkbox-Share-Price' onChange={e => this.setState({ showSharePrice: e.target.checked })} type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
                         <div className='checkbox'><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox' onChange={e => this.setState({ showTradeVol: e.target.checked })}/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
                     </div>
-                    <table className='data-table m-t-m'>
+                    <table className='data-table m-t-m' onMouseOut={e => this.setState({ highlightedSeries: null })}>
                         <thead className='data-table__head'>
                             <tr className='data-table__row'>
                                 <th className='data-table__cell'>Graph</th>

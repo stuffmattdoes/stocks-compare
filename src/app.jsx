@@ -79,6 +79,7 @@ class App extends Component {
         }, {
             axisX: {
                 labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
+                showGrid: false
             },
             fullWidth: true,
             height: 400,
@@ -121,24 +122,6 @@ class App extends Component {
 
     updateChart() {
         const { chartData, range } = this.state;
-
-        // Handle daily trades
-        // if (range !== '1d') {
-        //     chart.forEach((stock, i) => {
-        //         labels.push(stock.label);
-        //         seriesA.push(stock.close);
-        //         inputs.push(i);
-        //         outputs.push(stock.close);
-        //     });
-        // } else {
-        //     chart.forEach((stock, i) => {
-        //         let price = stock.average >= 0 ? stock.average : (seriesA[i - 1] || quote.open);
-        //         labels.push(stock.minute);
-        //         seriesA.push(price);
-        //         inputs.push(i);
-        //         outputs.push(price);
-        //     });
-        // }
         const chartDataNorm = this.normalizeChartDates(chartData);
 
         // Update Line Chart
@@ -157,7 +140,6 @@ class App extends Component {
             axisX: {
                 labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
             },
-            fullWidth: true,
         }, true);
 
         // Update Bar Char

@@ -18,8 +18,6 @@ class App extends Component {
         super(props);
         this.state = {
             chartData: mockData.data,
-            // chartData: [],
-            // chartDataNorm: [],
             companies: [],
             err: null,
             highlightedSeries: null,
@@ -34,32 +32,6 @@ class App extends Component {
             'Nasdaq Global Select': 'NASDAQ'
         }
         this.searchInput = null;
-        this.tabs = [
-            {
-                label: 'Today',
-                value: '1d'
-            },
-            {
-                label: '5 Days',
-                value: '5d'
-            },
-            {
-                label: '1 Month',
-                value: '1m'
-            },
-            {
-                label: '6 Months',
-                value: '6m'
-            },
-            {
-                label: '1 Year',
-                value: '1y'
-            },
-            {
-                label: '5 Years',
-                value: '5y'
-            }
-        ];
 
         // Methods
         this.createChartLine = this.createChartLine.bind(this);
@@ -93,28 +65,27 @@ class App extends Component {
 
     createChartLine() {
         const { chartData } = this.state;
-        // console.log(Chartist.plugins);
+
+        console.log(chartData);
 
         this.chartLine = new Chartist.Line('.ct-chart--line', {
+            labels: chartData.length > 0 ? chartData[0].chart.map(chart => chart.label) : [],
+            labelsFull: chartData.length > 0 ? chartData[0].chart.map(chart => chart.label) : [],
             series: chartData.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => chart.close),
                 name: `${company.quote.symbol} Line Series`
             }))
         }, {
-            // axisX: {
-            //     showGrid: false
-            // },
+            axisX: {
+                labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
+            },
             fullWidth: true,
             height: 400,
-            plugins: [
-                // Chartist.plugins.tooltip()
-                HoverLabels()
-            ],
-            showPoint: false
+            plugins: [ HoverLabels() ]
         });
 
-        // this.colorChart()
+        // this.colorChart();
         setTimeout(() => this.colorChart(), 100);
     }
 
@@ -150,7 +121,6 @@ class App extends Component {
 
     updateChart() {
         const { chartData, range } = this.state;
-        // console.log('updateChart');
 
         // Handle daily trades
         // if (range !== '1d') {
@@ -170,7 +140,6 @@ class App extends Component {
         //     });
         // }
         const chartDataNorm = this.normalizeChartDates(chartData);
-        // console.log(chartData, chartDataNorm);
 
         // Update Line Chart
         this.chartLine.update({
@@ -187,7 +156,8 @@ class App extends Component {
         }, {
             axisX: {
                 labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
-            }
+            },
+            fullWidth: true,
         }, true);
 
         // Update Bar Char
@@ -312,7 +282,7 @@ class App extends Component {
                         { 'color--critical': (company.quote.change < 0) },
                         { 'color--success': (company.quote.change > 0) }
                     ])}>
-                    {company.quote.change > 0 ? '+' : null}{company.quote.change} ({company.quote.changePercent * 100}%)
+                    {company.quote.change > 0 ? '+' : null}{company.quote.change} ({Math.round(company.quote.changePercent * 100 * 100) / 100}%)
                 </td>
                 <td className='data-table__cell'>
                     <strong>${company.quote.close}</strong>
@@ -323,14 +293,20 @@ class App extends Component {
 
     render() {
         const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
-        console.log(this.chartLine);
 
         return (
             <div className='app'>
                 <div className='container'>
                     <h1 className='type--heading-1'>Compare Some Stocks</h1>
                     <ul className='tabs'>
-                        { this.tabs.map(tab => <li className={classnames([ 'tab', { 'active': range === tab.value }])} key={tab.value} onClick={e => this.onClickTab(tab.value)}>{tab.label}</li>)}
+                        { [
+                            { label: 'Today', value: '1d' },
+                            { label: '5 Days', value: '5d' },
+                            { label: '1 Month', value: '1m' },
+                            { label: '6 Months', value: '6m' },
+                            { label: '1 Year', value: '1y' },
+                            { label: '5 Years', value: '5y' }
+                        ].map(tab => <li className={classnames([ 'tab', { 'active': range === tab.value }])} key={tab.value} onClick={e => this.onClickTab(tab.value)}>{tab.label}</li>)}
                     </ul>
                     <div className='chart-container'>
                         <div className='ct-chart ct-chart--line'></div>

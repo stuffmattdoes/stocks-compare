@@ -1,7 +1,8 @@
 // Libraries
 import axios from 'axios';
 import Chartist from 'chartist/dist/chartist.min.js';
-// import HoverLabels from './components/hover-labels';
+import HoverLabels from './components/hover-labels';
+// import Tooltip from './components/tooltip';
 import classnames from 'classnames';
 import React, { Component } from 'react';
 
@@ -26,6 +27,7 @@ class App extends Component {
             showSharePrice: true,
             showTradeVol: true
         }
+        this.chartBar = null;
         this.chartLine = null;
         this.markets = {
             'New York Stock Exchange': 'NYSE',
@@ -60,6 +62,7 @@ class App extends Component {
         ];
 
         // Methods
+        this.createChartLine = this.createChartLine.bind(this);
         this.colorChart = this.colorChart.bind(this);
         this.getStock = this.getStock.bind(this);
         this.normalizeChartDates = this.normalizeChartDates.bind(this);
@@ -77,7 +80,6 @@ class App extends Component {
     }
 
     componentDidUpdate() {
-        console.log('componentDidUpdate');
         this.updateChart();
     }
 
@@ -105,20 +107,21 @@ class App extends Component {
             // },
             fullWidth: true,
             height: 400,
-            // plugins: [
-            //     Chartist.plugins.hoverLabels()
-            // ],
+            plugins: [
+                // Chartist.plugins.tooltip()
+                HoverLabels()
+            ],
             showPoint: false
         });
 
-        this.colorChart()
-        // setTimeout(() => this.colorChart(), 100);
+        // this.colorChart()
+        setTimeout(() => this.colorChart(), 100);
     }
 
     createChartBar() {
         const { chartData } = this.state;
 
-        this.chartBars = new Chartist.Bar('.ct-chart--bar', {
+        this.chartBar = new Chartist.Bar('.ct-chart--bar', {
             series: chartData.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => chart.close),
@@ -172,6 +175,7 @@ class App extends Component {
         // Update Line Chart
         this.chartLine.update({
             labels: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
+            labelsFull: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
             series: chartDataNorm.map(company => ({
                 className: classnames([
                     `series-${company.quote.symbol}`,
@@ -187,7 +191,7 @@ class App extends Component {
         }, true);
 
         // Update Bar Char
-        // this.chartBars.update({
+        // this.chartBar.update({
         //     series: chartData.map(company => ({
         //         className: `series-${company.quote.symbol}`,
         //         data: company.chart.map(chart => chart.close),
@@ -319,6 +323,7 @@ class App extends Component {
 
     render() {
         const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
+        console.log(this.chartLine);
 
         return (
             <div className='app'>

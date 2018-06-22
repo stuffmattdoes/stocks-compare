@@ -1,13 +1,17 @@
 import Chartist from 'chartist/dist/chartist.min.js';
 
-export default (function hoverLabels(chart) {
-    console.log(chart);
-    const defaultOptions = {
+const hoverLabels = options => chart => {
+    const $chart = chart.container;
+    let $toolTip = $chart.querySelector('.sparkline-tooltip');
 
-    };
-
-    Chartist.plugins = Chartist.plugins || {};
-    Chartist.plugins.hoverLabels = function(options) {
-
+    if (!$toolTip) {
+        $toolTip = document.createElement('div');
+        $toolTip.className = 'sparkline-tooltip';
+        $chart.appendChild($toolTip);
     }
-}(Chartist));
+
+    const height = $toolTip.offsetHeight;
+    const width = $toolTip.offsetWidth;
+}
+
+export default hoverLabels;

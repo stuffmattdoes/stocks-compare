@@ -60,6 +60,7 @@ class App extends Component {
         ];
 
         // Methods
+        this.colorChart = this.colorChart.bind(this);
         this.getStock = this.getStock.bind(this);
         this.normalizeChartDates = this.normalizeChartDates.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
@@ -76,11 +77,12 @@ class App extends Component {
     }
 
     componentDidUpdate() {
+        console.log('componentDidUpdate');
         this.updateChart();
     }
 
     componentWillMount() {
-        this.getCompanies();
+        // this.getCompanies();
     }
 
     componentWillUnmount() {
@@ -89,6 +91,7 @@ class App extends Component {
 
     createChartLine() {
         const { chartData } = this.state;
+        // console.log(Chartist.plugins);
 
         this.chartLine = new Chartist.Line('.ct-chart--line', {
             series: chartData.map(company => ({
@@ -102,8 +105,14 @@ class App extends Component {
             // },
             fullWidth: true,
             height: 400,
+            // plugins: [
+            //     Chartist.plugins.hoverLabels()
+            // ],
             showPoint: false
         });
+
+        this.colorChart()
+        // setTimeout(() => this.colorChart(), 100);
     }
 
     createChartBar() {
@@ -130,6 +139,12 @@ class App extends Component {
         });
     }
 
+    colorChart() {
+        this.state.chartData.forEach(company => {
+            document.querySelectorAll(`.series-${company.quote.symbol}`).forEach(elem => { elem.style.stroke = company.color });
+        });
+    }
+
     updateChart() {
         const { chartData, range } = this.state;
         // console.log('updateChart');
@@ -152,6 +167,7 @@ class App extends Component {
         //     });
         // }
         const chartDataNorm = this.normalizeChartDates(chartData);
+        // console.log(chartData, chartDataNorm);
 
         // Update Line Chart
         this.chartLine.update({
@@ -179,9 +195,7 @@ class App extends Component {
         //     }))
         // }, {}, true);
 
-        this.state.chartData.forEach(company => {
-            document.querySelectorAll(`.series-${company.quote.symbol}`).forEach(elem => elem.style.stroke = company.color);
-        });
+        this.colorChart();
     }
 
     normalizeChartDates(chartData) {
@@ -274,19 +288,6 @@ class App extends Component {
             chartData: this.state.chartData.filter(company => company.quote.symbol !== companySymbol)
         });
     }
-
-    // highlightSeries(symbol, highlighted) {
-    //     const lineSeries = document.querySelector(`.ct-chart--line .series-${symbol}`);
-    //     // const barSeries = document.querySelector(`.ct-chart--bar .series-${symbol}`);
-    //
-    //     if (highlighted) {
-    //         lineSeries.classList.add('active');
-    //         // barSeries.classList.add('active');
-    //     } else {
-    //         lineSeries.classList.remove('active');
-    //         // barSeries.classList.remove('active');
-    //     }
-    // }
 
     renderCompany(company) {
         return (

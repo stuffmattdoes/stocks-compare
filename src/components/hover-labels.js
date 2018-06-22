@@ -1,6 +1,6 @@
 import Chartist from 'chartist/dist/chartist.min.js';
 
-function hoverLabels(chart) {
+export default (function hoverLabels(chart) {
     console.log(chart);
     const defaultOptions = {
 
@@ -10,4 +10,4 @@ function hoverLabels(chart) {
     Chartist.plugins.hoverLabels = function(options) {
 
     }
-}
+}(Chartist));

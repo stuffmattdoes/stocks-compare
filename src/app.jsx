@@ -18,6 +18,7 @@ class App extends Component {
         super(props);
         this.state = {
             chartData: mockData.data,
+            // chartData: [],
             companies: [],
             err: null,
             highlightedSeries: null,
@@ -57,6 +58,7 @@ class App extends Component {
 
     componentWillMount() {
         // this.getCompanies();
+
     }
 
     componentWillUnmount() {
@@ -65,8 +67,6 @@ class App extends Component {
 
     createChartLine() {
         const { chartData } = this.state;
-
-        console.log(chartData);
 
         this.chartLine = new Chartist.Line('.ct-chart--line', {
             labels: chartData.length > 0 ? chartData[0].chart.map(chart => chart.label) : [],
@@ -85,6 +85,8 @@ class App extends Component {
             height: 400,
             plugins: [ HoverLabels() ]
         });
+
+        // HoverLabels()(this.chartLine);
 
         // this.colorChart();
         setTimeout(() => this.colorChart(), 100);
@@ -123,6 +125,7 @@ class App extends Component {
     updateChart() {
         const { chartData, range } = this.state;
         const chartDataNorm = this.normalizeChartDates(chartData);
+        // console.log(chartDataNorm);
 
         // Update Line Chart
         this.chartLine.update({
@@ -158,6 +161,7 @@ class App extends Component {
         const maxDates = chartData.reduce((acc, chart, i) => acc > chart.chart.length ? acc : chart.chart.length, 0);
 
         return chartData.map(chart => {
+            // console.log(chart.quote.symbol, chart.chart.length, maxDates);
             if (chart.chart.length === maxDates) {
                 return chart;
             } else {

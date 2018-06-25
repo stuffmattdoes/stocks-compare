@@ -17,14 +17,14 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            chartData: mockData.data,
-            // chartData: [],
+            // chartData: mockData.data,
+            chartData: [],
             companies: [],
             err: null,
             highlightedSeries: null,
             range: '1m',
-            showSharePrice: true,
-            showTradeVol: true
+            // showSharePrice: true,
+            // showTradeVol: true
         }
         this.chartBar = null;
         this.chartLine = null;
@@ -47,18 +47,21 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.createChartLine();
-        // this.createChartBar();
-        window.addEventListener('resize', this.updateChart);
+        // window.addEventListener('resize', this.updateChart);
     }
 
     componentDidUpdate() {
-        this.updateChart();
+        if (this.chartLine === null) {
+            this.createChartLine();
+            // this.createChartBar();
+        } else {
+            this.updateChart();
+        }
     }
 
     componentWillMount() {
         // this.getCompanies();
-
+        this.getStock('kmx');
     }
 
     componentWillUnmount() {
@@ -67,15 +70,18 @@ class App extends Component {
 
     createChartLine() {
         const { chartData } = this.state;
+        const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
 
         this.chartLine = new Chartist.Line('.ct-chart--line', {
-            labels: chartData.length > 0 ? chartData[0].chart.map(chart => chart.label) : [],
-            labelsFull: chartData.length > 0 ? chartData[0].chart.map(chart => chart.label) : [],
-            series: chartData.map(company => ({
+            labels: labels,
+            series: chartData.length > 0 ? chartData.map(company => ({
                 className: `series-${company.quote.symbol}`,
-                data: company.chart.map(chart => chart.close),
+                data: company.chart.map(chart => ({
+                    date: chart.date,
+                    value: chart.close
+                })),
                 name: `${company.quote.symbol} Line Series`
-            }))
+            })) : []
         }, {
             axisX: {
                 labelInterpolationFnc: (value, i) => i % Math.round(chartData[0].chart.length / 7)  === 0 ? value : null,
@@ -125,18 +131,20 @@ class App extends Component {
     updateChart() {
         const { chartData, range } = this.state;
         const chartDataNorm = this.normalizeChartDates(chartData);
-        // console.log(chartDataNorm);
+        const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
 
         // Update Line Chart
         this.chartLine.update({
-            labels: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
-            labelsFull: chartDataNorm.length > 0 ? chartDataNorm[0].chart.map(chart => chart.label) : [],
+            labels: labels,
             series: chartDataNorm.map(company => ({
                 className: classnames([
                     `series-${company.quote.symbol}`,
                     { 'active': this.state.highlightedSeries === company.quote.symbol }
                 ]),
-                data: company.chart.map(chart => chart.close),
+                data: company.chart.map(chart => ({
+                    date: chart.date,
+                    value: chart.close
+                })),
                 name: `${company.quote.symbol} Line Series`
             }))
         }, {
@@ -278,7 +286,7 @@ class App extends Component {
     }
 
     render() {
-        const { chartData, err, range, showSharePrice, showTradeVol } = this.state;
+        const { chartData, err, range } = this.state;
 
         return (
             <div className='app'>
@@ -297,10 +305,6 @@ class App extends Component {
                     <div className='chart-container'>
                         <div className='ct-chart ct-chart--line'></div>
                         <div className='ct-chart ct-chart--bar'></div>
-                    </div>
-                    <div className='checkbox__wrapper d-none'>
-                        <div className='checkbox'><input checked={showSharePrice} id='Checkbox-Share-Price' onChange={e => this.setState({ showSharePrice: e.target.checked })} type='checkbox'/><label htmlFor='Checkbox-Share-Price'>Share Price</label></div>
-                        <div className='checkbox'><input checked={showTradeVol} id='Checkbox-Trade-Volume' type='checkbox' onChange={e => this.setState({ showTradeVol: e.target.checked })}/><label htmlFor='Checkbox-Trade-Volume'>Trade Volume</label></div>
                     </div>
                     <table className='data-table m-t-m' onMouseOut={e => this.setState({ highlightedSeries: null })}>
                         <thead className='data-table__head'>

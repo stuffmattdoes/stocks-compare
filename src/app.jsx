@@ -169,7 +169,6 @@ class App extends Component {
         const maxDates = chartData.reduce((acc, chart, i) => acc > chart.chart.length ? acc : chart.chart.length, 0);
 
         return chartData.map(chart => {
-            // console.log(chart.quote.symbol, chart.chart.length, maxDates);
             if (chart.chart.length === maxDates) {
                 return chart;
             } else {

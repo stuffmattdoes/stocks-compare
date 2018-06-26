@@ -286,6 +286,7 @@ class App extends Component {
 
     render() {
         const { chartData, err, range } = this.state;
+        // console.log(chartData);
 
         return (
             <div className='app'>

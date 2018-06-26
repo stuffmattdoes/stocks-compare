@@ -26,8 +26,6 @@ const hoverLabels = options => chart => {
     // });
 
     createSparkLine();
-    getPoints();
-    listeners();
 
     function init(e) {
         console.log('created');
@@ -40,6 +38,8 @@ const hoverLabels = options => chart => {
 
         // createSparkLine();
         // createToolTip();
+        getPoints();
+        listeners();
     }
 
     // Create tooltip
@@ -103,7 +103,7 @@ const hoverLabels = options => chart => {
 
     function listeners() {
         $chart.addEventListener('mousemove', getNearestPoint);
-        // $chart.addEventListener('mouseleave', hideSparkline);
+        $chart.addEventListener('mouseleave', hideSparkline);
     }
 
     // createToolTip();

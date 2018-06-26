@@ -3,8 +3,9 @@ import Chartist from 'chartist/dist/chartist.min.js';
 const hoverLabels = options => chart => {
     const $chart = chart.container;
     let chartWidth;
+    let $gridArea;
     let $grid;
-    let gridWidth;
+    let gridRect;
     let hoverSection = 0;
     let hoverSectionTemp = 0;
     let activePoints;
@@ -14,27 +15,31 @@ const hoverLabels = options => chart => {
     let hoverSectionWidth;
     let sectionWidth;
     let activeDate;
+    let offsetLeft = 0;
 
     // console.log(chart);
 
     chart.on('created', init);
-    chart.on('updated', e => {
-        console.log('updated');
-        getPoints();
-    });
+    // chart.on('data', e => {
+    //     console.log('update');
+    //     getPoints();
+    // });
+
+    createSparkLine();
+    getPoints();
+    listeners();
 
     function init(e) {
-        // console.log('created', chart);
+        console.log('created');
         chartWidth = $chart.getBoundingClientRect().width;
         $grid = $chart.querySelector('.ct-grids');
-        gridWidth = $grid.getBoundingClientRect().width;
+        gridRect = $grid.getBoundingClientRect();
         // sectionWidth = gridWidth / chart.data.labels.length;
         sectionWidth = chartWidth / (chart.data.labels.length - 1);
         // sectionWidth = sectionWidth < 1 ? 1 : sectionWidth;
 
-        listeners();
+        // createSparkLine();
         // createToolTip();
-        getPoints();
     }
 
     // Create tooltip
@@ -61,16 +66,28 @@ const hoverLabels = options => chart => {
         }
     }
 
+    function hideSparkline(e) {
+        $sparkline.style.opacity = 0;
+    }
+
     function getNearestPoint(e) {
-        hoverSectionTemp = Math.round(e.offsetX / sectionWidth);
+        hoverSectionTemp = Math.round((e.clientX - gridRect.left) / sectionWidth);
 
         if (hoverSectionTemp != hoverSection) {
             hoverSection = hoverSectionTemp;
             activeDate = chart.data.labels[hoverSection];
             activePoints = chart.data.series.map(series => series.data.findIndex((point, i) => point.date === activeDate));
             // activePoints = chart.data.series.map(series => series.data.find((point, i) => point.date === activeDate));
-            $pointsSeries.forEach((series, i) => series.forEach((point, j) => j === activePoints[i] ? point.classList.add('active') : point.classList.remove('active')));
-            // console.log(activePoints);
+            $pointsSeries.forEach((series, i) => series.forEach((point, j) => {
+                if (j === activePoints[i]) {
+                    offsetLeft = Math.round(point.getBoundingClientRect().left - (gridRect.left - 49));
+                    point.classList.add('active');
+                } else {
+                    point.classList.remove('active');
+                }
+            }));
+            $sparkline.style.left = `${offsetLeft}px`;
+            $sparkline.style.opacity = 1;
         }
     }
 
@@ -86,6 +103,7 @@ const hoverLabels = options => chart => {
 
     function listeners() {
         $chart.addEventListener('mousemove', getNearestPoint);
+        // $chart.addEventListener('mouseleave', hideSparkline);
     }
 
     // createToolTip();

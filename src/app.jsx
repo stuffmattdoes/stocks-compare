@@ -90,7 +90,7 @@ class App extends Component {
             fullWidth: true,
             height: 400,
             plugins: [ HoverLabels() ]
-        });
+        }, true);
 
         // HoverLabels()(this.chartLine);
 

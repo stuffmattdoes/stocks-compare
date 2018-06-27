@@ -80,12 +80,10 @@ const hoverLabels = options => chart => {
         }
 
         $sparkline.classList.add('active');
-        // hoverSectionTemp = Math.round((e.clientX - (chartRect.width - gridRect.width)) / sectionWidth);
-        hoverSectionTemp = Math.round(e.offsetX / sectionWidth);
+        hoverSectionTemp = Math.floor(e.offsetX / sectionWidth);
 
         if (hoverSectionTemp != hoverSection) {
             hoverSection = hoverSectionTemp;
-            console.log(e.offsetX, hoverSection);
             activeDate = chart.data.labels[hoverSection];
             activePoints = chart.data.series.map(series => series.data.findIndex((point, i) => point.date === activeDate));
 

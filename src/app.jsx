@@ -292,6 +292,7 @@ class App extends Component {
 
     render() {
         const { chartData, err, range } = this.state;
+        console.log(chartData);
 
         return (
             <div className='app'>
@@ -310,6 +311,7 @@ class App extends Component {
                     <div className='chart-container'>
                         <div className='ct-chart ct-chart--line'>
                             <div className='ct-chart__interaction'></div>
+                            <div className='sparkline'></div>
                         </div>
                         <div className='ct-chart ct-chart--bar'></div>
                     </div>

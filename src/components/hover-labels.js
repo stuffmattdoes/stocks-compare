@@ -26,13 +26,14 @@ const hoverLabels = options => chart => {
     //     getPoints();
     // });
 
-    createSparkLine();
+    // createSparkline();
 
     function init(e) {
-        // console.log('created', chart);
-        chartRect = $chart.getBoundingClientRect();
+        console.log('created', chart);
         $grid = $chart.querySelector('.ct-grids');
         $interactionlayer = $chart.querySelector('.ct-chart__interaction');
+        $sparkline = $chart.querySelector('.sparkline');
+        chartRect = $chart.getBoundingClientRect();
         gridRect = $grid.getBoundingClientRect();
         sectionWidth = gridRect.width / chart.data.labels.length;
         // sectionWidth = sectionWidth < 1 ? 1 : sectionWidth;
@@ -57,7 +58,7 @@ const hoverLabels = options => chart => {
     }
 
     // // Create dashed line
-    function createSparkLine() {
+    function createSparkline() {
         $sparkline = $chart.querySelector('.sparkline-line');
 
         if (!$sparkline) {

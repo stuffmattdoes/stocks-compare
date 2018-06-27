@@ -28,6 +28,14 @@ class App extends Component {
         }
         this.chartBar = null;
         this.chartLine = null;
+        this.colors = [
+            '#f44336', '#e91e63', '#9c27b0',
+            '#673ab7', '#3f51b5', '#2196f3',
+            '#03a9f4', '#00bcd4', '#009688',
+            '#4caf50', '#8bc34a', '#cddc39',
+            '#ffeb3b', '#ffc107', '#ff9800',
+            '#795548', '#607d8b'
+        ];
         this.markets = {
             'New York Stock Exchange': 'NYSE',
             'Nasdaq Global Select': 'NASDAQ'
@@ -46,9 +54,9 @@ class App extends Component {
         this.updateChart = this.updateChart.bind(this);
     }
 
-    componentDidMount() {
-        // window.addEventListener('resize', this.updateChart);
-    }
+    // componentDidMount() {
+    //     window.addEventListener('resize', this.updateChart);
+    // }
 
     componentDidUpdate() {
         if (this.chartLine === null) {
@@ -91,8 +99,6 @@ class App extends Component {
             height: 400,
             plugins: [ HoverLabels() ]
         }, true);
-
-        // HoverLabels()(this.chartLine);
 
         // this.colorChart();
         setTimeout(() => this.colorChart(), 100);
@@ -199,7 +205,7 @@ class App extends Component {
             .then(res => {
                 const newCompany = {
                     ...res.data,
-                    color: '#f44336'
+                    color: this.colors[Math.floor(Math.random() * Math.floor(18))]
                 };
 
                 this.setState({
@@ -286,7 +292,6 @@ class App extends Component {
 
     render() {
         const { chartData, err, range } = this.state;
-        // console.log(chartData);
 
         return (
             <div className='app'>
@@ -303,7 +308,9 @@ class App extends Component {
                         ].map(tab => <li className={classnames([ 'tab', { 'active': range === tab.value }])} key={tab.value} onClick={e => this.onClickTab(tab.value)}>{tab.label}</li>)}
                     </ul>
                     <div className='chart-container'>
-                        <div className='ct-chart ct-chart--line'></div>
+                        <div className='ct-chart ct-chart--line'>
+                            <div className='ct-chart__interaction'></div>
+                        </div>
                         <div className='ct-chart ct-chart--bar'></div>
                     </div>
                     <table className='data-table m-t-m' onMouseOut={e => this.setState({ highlightedSeries: null })}>

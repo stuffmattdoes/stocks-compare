@@ -2,12 +2,13 @@ import Chartist from 'chartist/dist/chartist.min.js';
 
 const hoverLabels = options => chart => {
     const $chart = chart.container;
-    let chartWidth;
+    let chartRect;
     let $gridArea;
     let $grid;
+    let $interactionlayer;
     let gridRect;
-    let hoverSection = 0;
-    let hoverSectionTemp = 0;
+    let hoverSection;
+    let hoverSectionTemp;
     let activePoints;
     let $pointsAll;
     let $pointsSeries;
@@ -15,7 +16,7 @@ const hoverLabels = options => chart => {
     let hoverSectionWidth;
     let sectionWidth;
     let activeDate;
-    let offsetLeft = 0;
+    let offsetLeft;
 
     // console.log(chart);
 
@@ -28,16 +29,16 @@ const hoverLabels = options => chart => {
     createSparkLine();
 
     function init(e) {
-        console.log('created');
-        chartWidth = $chart.getBoundingClientRect().width;
+        // console.log('created', chart);
+        chartRect = $chart.getBoundingClientRect();
         $grid = $chart.querySelector('.ct-grids');
+        $interactionlayer = $chart.querySelector('.ct-chart__interaction');
         gridRect = $grid.getBoundingClientRect();
-        // sectionWidth = gridWidth / chart.data.labels.length;
-        sectionWidth = chartWidth / (chart.data.labels.length - 1);
+        sectionWidth = gridRect.width / chart.data.labels.length;
         // sectionWidth = sectionWidth < 1 ? 1 : sectionWidth;
 
-        // createSparkLine();
         // createToolTip();
+        setInteractionLayer();
         getPoints();
         listeners();
     }
@@ -66,18 +67,28 @@ const hoverLabels = options => chart => {
         }
     }
 
-    function hideSparkline(e) {
-        $sparkline.style.opacity = 0;
+    function hideIndicator(e) {
+        hoverSection = null;
+        $chart.querySelectorAll('.ct-point.active').forEach(point => point.classList.remove('active'));
+        $sparkline.classList.remove('active');
     }
 
     function getNearestPoint(e) {
-        hoverSectionTemp = Math.round((e.clientX - gridRect.left) / sectionWidth);
+        if (e.clientX < gridRect.left || e.clientX > gridRect.left + gridRect.width) {
+            hideIndicator();
+            return;
+        }
+
+        $sparkline.classList.add('active');
+        // hoverSectionTemp = Math.round((e.clientX - (chartRect.width - gridRect.width)) / sectionWidth);
+        hoverSectionTemp = Math.round(e.offsetX / sectionWidth);
 
         if (hoverSectionTemp != hoverSection) {
             hoverSection = hoverSectionTemp;
+            console.log(e.offsetX, hoverSection);
             activeDate = chart.data.labels[hoverSection];
             activePoints = chart.data.series.map(series => series.data.findIndex((point, i) => point.date === activeDate));
-            // activePoints = chart.data.series.map(series => series.data.find((point, i) => point.date === activeDate));
+
             $pointsSeries.forEach((series, i) => series.forEach((point, j) => {
                 if (j === activePoints[i]) {
                     offsetLeft = Math.round(point.getBoundingClientRect().left - (gridRect.left - 49));
@@ -86,8 +97,8 @@ const hoverLabels = options => chart => {
                     point.classList.remove('active');
                 }
             }));
+
             $sparkline.style.left = `${offsetLeft}px`;
-            $sparkline.style.opacity = 1;
         }
     }
 
@@ -101,9 +112,16 @@ const hoverLabels = options => chart => {
         // })));
     }
 
+    function setInteractionLayer() {
+        $interactionlayer.style.height = `${gridRect.height}px`;
+        $interactionlayer.style.left = `${gridRect.left - chartRect.left}px`;
+        $interactionlayer.style.top = `${gridRect.top - chartRect.top}px`;
+        $interactionlayer.style.width = `${gridRect.width}px`;
+    }
+
     function listeners() {
-        $chart.addEventListener('mousemove', getNearestPoint);
-        $chart.addEventListener('mouseleave', hideSparkline);
+        $interactionlayer.addEventListener('mousemove', getNearestPoint);
+        $interactionlayer.addEventListener('mouseleave', hideIndicator);
     }
 
     // createToolTip();

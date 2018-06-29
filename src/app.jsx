@@ -22,7 +22,7 @@ class App extends Component {
             companies: [],
             err: null,
             highlightedSeries: null,
-            range: '1m',
+            range: '1d',
             // showSharePrice: true,
             // showTradeVol: true
         }
@@ -45,6 +45,7 @@ class App extends Component {
         // Methods
         this.createChartLine = this.createChartLine.bind(this);
         this.colorChart = this.colorChart.bind(this);
+        this.formatLabels = this.formatLabels.bind(this);
         this.getStock = this.getStock.bind(this);
         this.normalizeChartDates = this.normalizeChartDates.bind(this);
         this.onRemoveCompany = this.onRemoveCompany.bind(this);
@@ -54,9 +55,9 @@ class App extends Component {
         this.updateChart = this.updateChart.bind(this);
     }
 
-    // componentDidMount() {
-    //     window.addEventListener('resize', this.updateChart);
-    // }
+    componentDidMount() {
+        window.addEventListener('resize', this.updateChart);
+    }
 
     componentDidUpdate() {
         if (this.chartLine === null) {
@@ -77,15 +78,16 @@ class App extends Component {
     }
 
     createChartLine() {
-        const { chartData } = this.state;
-        const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
+        const { chartData, range } = this.state;
+        const labels = this.formatLabels(chartData);
+        // const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
 
         this.chartLine = new Chartist.Line('.ct-chart--line', {
             labels: labels,
             series: chartData.length > 0 ? chartData.map(company => ({
                 className: `series-${company.quote.symbol}`,
                 data: company.chart.map(chart => ({
-                    date: chart.date,
+                    date: range === '1d' ? chart.minute : chart.date,
                     value: chart.close
                 })),
                 name: `${company.quote.symbol} Line Series`
@@ -101,7 +103,7 @@ class App extends Component {
         }, true);
 
         // this.colorChart();
-        setTimeout(() => this.colorChart(), 100);
+        // setTimeout(() => this.colorChart(), 100);
     }
 
     createChartBar() {
@@ -137,7 +139,8 @@ class App extends Component {
     updateChart() {
         const { chartData, range } = this.state;
         const chartDataNorm = this.normalizeChartDates(chartData);
-        const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
+        const labels = this.formatLabels(chartData);
+        // chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
 
         // Update Line Chart
         this.chartLine.update({
@@ -148,7 +151,7 @@ class App extends Component {
                     { 'active': this.state.highlightedSeries === company.quote.symbol }
                 ]),
                 data: company.chart.map(chart => ({
-                    date: chart.date,
+                    date: range === '1d' ? chart.minute : chart.date,
                     value: chart.close
                 })),
                 name: `${company.quote.symbol} Line Series`
@@ -168,7 +171,7 @@ class App extends Component {
         //     }))
         // }, {}, true);
 
-        this.colorChart();
+        // this.colorChart();
     }
 
     normalizeChartDates(chartData) {
@@ -186,6 +189,19 @@ class App extends Component {
                 }
             }
         });
+    }
+
+    formatLabels(chartData) {
+        const { range } = this.state;
+
+        return chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => {
+            if (range === '1d') {
+                // const newDate = `${chart.date.substring(0, 4)}-${chart.date.substring(4, 6)}-${chart.date.substring(6, 8)} ${chart.minute}`;
+                return chart.minute;
+            } else {
+                return chart.date;
+            }
+        }) : acc, []);
     }
 
     getCompanies() {
@@ -292,7 +308,6 @@ class App extends Component {
 
     render() {
         const { chartData, err, range } = this.state;
-        console.log(chartData);
 
         return (
             <div className='app'>
@@ -300,7 +315,7 @@ class App extends Component {
                     <h1 className='type--heading-1'>Compare Some Stocks</h1>
                     <ul className='tabs'>
                         { [
-                            { label: 'Today', value: '1d' },
+                            { label: '1 Day', value: '1d' },
                             { label: '5 Days', value: '5d' },
                             { label: '1 Month', value: '1m' },
                             { label: '6 Months', value: '6m' },

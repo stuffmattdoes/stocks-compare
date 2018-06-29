@@ -21,15 +21,12 @@ const hoverLabels = options => chart => {
     // console.log(chart);
 
     chart.on('created', init);
-    // chart.on('data', e => {
+    // chart.on('draw', e => {
     //     console.log('update');
     //     getPoints();
     // });
 
-    // createSparkline();
-
     function init(e) {
-        console.log('created', chart);
         $grid = $chart.querySelector('.ct-grids');
         $interactionlayer = $chart.querySelector('.ct-chart__interaction');
         $sparkline = $chart.querySelector('.sparkline');
@@ -54,17 +51,6 @@ const hoverLabels = options => chart => {
             $toolTip.innerHTML = `<p>Lollerskates</p>`;
 
             $chart.appendChild($toolTip);
-        }
-    }
-
-    // // Create dashed line
-    function createSparkline() {
-        $sparkline = $chart.querySelector('.sparkline-line');
-
-        if (!$sparkline) {
-            $sparkline = document.createElement('div');
-            $sparkline.className = 'sparkline';
-            $chart.appendChild($sparkline);
         }
     }
 

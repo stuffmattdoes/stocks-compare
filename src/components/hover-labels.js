@@ -13,6 +13,9 @@ const hoverLabels = options => chart => {
     let $pointsAll;
     let $pointsSeries;
     let $sparkline;
+    let $tooltip;
+    let $tooltipDate;
+    let $tooltipCompanies;
     let hoverSectionWidth;
     let sectionWidth;
     let activeDate;
@@ -30,28 +33,17 @@ const hoverLabels = options => chart => {
         $grid = $chart.querySelector('.ct-grids');
         $interactionlayer = $chart.querySelector('.ct-chart__interaction');
         $sparkline = $chart.querySelector('.sparkline');
+        $tooltip = document.querySelector('.tooltip');
+        $tooltipDate = $tooltip.querySelector('.tooltip__date');
+        $tooltipCompanies = $tooltip.querySelector('.tooltip__companies');
         chartRect = $chart.getBoundingClientRect();
         gridRect = $grid.getBoundingClientRect();
         sectionWidth = gridRect.width / chart.data.labels.length;
         // sectionWidth = sectionWidth < 1 ? 1 : sectionWidth;
 
-        // createToolTip();
         setInteractionLayer();
         getPoints();
         listeners();
-    }
-
-    // Create tooltip
-    function createToolTip() {
-        let $toolTip = $chart.querySelector('.sparkline-tooltip');
-
-        if (!$toolTip) {
-            $toolTip = document.createElement('div');
-            $toolTip.className = 'sparkline-tooltip';
-            $toolTip.innerHTML = `<p>Lollerskates</p>`;
-
-            $chart.appendChild($toolTip);
-        }
     }
 
     function hideIndicator(e) {
@@ -84,6 +76,7 @@ const hoverLabels = options => chart => {
             }));
 
             $sparkline.style.left = `${offsetLeft}px`;
+            updateTooltip();
         }
     }
 
@@ -95,6 +88,17 @@ const hoverLabels = options => chart => {
         //     x: point.getBoundingClientRect().left,
         //     y: point.getBoundingClientRect().top
         // })));
+    }
+
+    function updateTooltip() {
+        $tooltipDate.innerHTML = activeDate;
+        console.log(chart.data.series.data);
+
+        const innerHtml = `
+        <li className='tooltip__company'>
+            <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+            KMX - <strong>$78.09</strong>
+        </li>`;
     }
 
     function setInteractionLayer() {
@@ -109,8 +113,6 @@ const hoverLabels = options => chart => {
         $interactionlayer.addEventListener('mouseleave', hideIndicator);
     }
 
-    // createToolTip();
-    // getNearestPoint();
 }
 
 export default hoverLabels;

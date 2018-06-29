@@ -17,14 +17,11 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // chartData: mockData.data,
             chartData: [],
             companies: [],
             err: null,
             highlightedSeries: null,
-            range: '1d',
-            // showSharePrice: true,
-            // showTradeVol: true
+            range: '1m'
         }
         this.chartBar = null;
         this.chartLine = null;
@@ -82,6 +79,8 @@ class App extends Component {
         const labels = this.formatLabels(chartData);
         // const labels = chartData.reduce((acc, series, i) => series.chart.length > acc.length ? series.chart.map(chart => chart.date) : acc, []);
 
+        console.log(chartData);
+
         this.chartLine = new Chartist.Line('.ct-chart--line', {
             labels: labels,
             series: chartData.length > 0 ? chartData.map(company => ({
@@ -90,6 +89,10 @@ class App extends Component {
                     date: range === '1d' ? chart.minute : chart.date,
                     value: chart.close
                 })),
+                meta: {
+                    imageUrl: company.logo.url,
+                    symbol: company.quote.symbol
+                },
                 name: `${company.quote.symbol} Line Series`
             })) : []
         }, {
@@ -329,6 +332,47 @@ class App extends Component {
                             <div className='sparkline'></div>
                         </div>
                         <div className='ct-chart ct-chart--bar'></div>
+                        <div className='tooltip'>
+                            <div className='tooltip__date'>6/11</div>
+                            <ul className='tooltip__companies'>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                                <li className='tooltip__company'>
+                                    <img className='m-r-xs s-m' src='https://storage.googleapis.com/iex/api/logos/KMX.png' />
+                                    KMX - <strong>$78.09</strong>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <table className='data-table m-t-m' onMouseOut={e => this.setState({ highlightedSeries: null })}>
                         <thead className='data-table__head'>

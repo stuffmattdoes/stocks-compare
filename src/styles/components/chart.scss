@@ -112,6 +112,22 @@
     // top: 50%;
 }
 
+.tooltip {
+    background: #f7f7f7;
+    padding: 8px 16px;
+
+    &__companies {
+        margin: 0 -16px;
+    }
+
+    &__company {
+        align-items: center;
+        display: inline-flex;
+        font-size: 12px;
+        padding: 6px 16px;
+    }
+}
+
 @keyframes dashOffset {
     0% {
         stroke-dashoffset: 0;
